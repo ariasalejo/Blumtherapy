@@ -3,61 +3,148 @@ package co.ariasalejo.blumtherapy
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MaterialTheme { RecoveryHome() } }
+        setContent { BlumTherapyApp() }
     }
 }
 
-private data class SupportArea(val title: String, val description: String)
+private data class Resource(val title: String, val group: String, val subtitle: String, val detail: String, val mark: String)
+
+private val resources = listOf(
+    Resource("Find professional support", "Support", "Treatment pathways and peer support", "Start with a qualified health professional or an official local treatment directory. Confirm eligibility, cost, opening hours and availability directly with the provider.", "♡"),
+    Resource("A steadier moment", "Wellbeing", "Small grounding and reflection exercises", "Pause, place both feet on the floor, breathe comfortably and name five things you can see. This self-care exercise is not a treatment or crisis service.", "✦"),
+    Resource("Learn a new skill", "Learning", "Training, education and digital skills", "Explore public education services in your country or region. Dates, entry requirements and fees vary; confirm current details with the official provider.", "↗"),
+    Resource("Work with purpose", "Work", "Job readiness and meaningful activity", "Build a simple CV, identify one skill to practice and explore public employment services. This app does not promise jobs, income or acceptance.", "⌁"),
+    Resource("My next small step", "Progress", "Choose a realistic goal for today", "Choose one small action you control, such as contacting a trusted person, taking a walk or reviewing a learning resource. A setback never removes your dignity.", "✓"),
+    Resource("Support for family", "Community", "Listen without blame or pressure", "Ask what kind of support the person wants, listen without judgment and offer practical help. Respect boundaries and seek professional guidance when needed.", "♡"),
+    Resource("Evidence and recovery", "Learning", "Understand evidence and its limits", "Health information should come from reputable, traceable sources and explain uncertainty. This app does not diagnose, prescribe or replace professional care.", "⌘")
+)
+
+private val ink = Color(0xFF0B1020)
+private val panel = Color(0xFF141D32)
+private val mint = Color(0xFF67F5CE)
+private val violet = Color(0xFF9B8CFF)
+private val muted = Color(0xFFABB7CB)
 
 @Composable
-private fun RecoveryHome() {
-    val areas = listOf(
-        SupportArea("Find support", "Explore professional treatment, peer support, and community options. Directory integration is planned."),
-        SupportArea("Learn and grow", "Discover education, skills, and training resources. Availability depends on your location."),
-        SupportArea("Work and purpose", "Explore job-readiness, volunteering, and meaningful activities. No jobs are promised by this app."),
-        SupportArea("Your next step", "Choose a small, self-directed goal. Progress is not a moral score, and a setback never removes your dignity."),
-        SupportArea("Evidence and hope", "Health information must cite trustworthy sources and explain limitations. Faith-based support is always optional.")
-    )
-    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("BlumTherapy", style = MaterialTheme.typography.headlineLarge)
-                    Text("A second chance, grounded in evidence", style = MaterialTheme.typography.titleMedium)
-                    Text("An early prototype for recovery support, learning, work, and connection. It is not a treatment provider or emergency service.")
-                }
-            }
-            items(areas) { area ->
-                Card(Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(area.title, style = MaterialTheme.typography.titleMedium)
-                        Text(area.description, style = MaterialTheme.typography.bodyMedium)
+private fun BlumTherapyApp() {
+    var query by remember { mutableStateOf("") }
+    var group by remember { mutableStateOf("All") }
+    var expanded by remember { mutableStateOf<String?>(null) }
+    var light by remember { mutableStateOf(false) }
+    val groups = listOf("All", "Support", "Wellbeing", "Learning", "Work", "Progress", "Community")
+    val shown = resources.filter { (group == "All" || it.group == group) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true)) }
+    val bg = if (light) Color(0xFFF4F7FB) else ink
+    val fg = if (light) Color(0xFF152039) else Color(0xFFF4F7FF)
+    val card = if (light) Color.White else panel
+    MaterialTheme {
+        Surface(Modifier.fillMaxSize(), color = bg) {
+            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(15.dp)) {
+                item {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Box(Modifier.size(46.dp).background(Brush.linearGradient(listOf(mint, violet)), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
+                            Text("B", color = ink, fontSize = 27.sp, fontWeight = FontWeight.Black)
+                        }
+                        Column(Modifier.weight(1f)) {
+                            Text("BlumTherapy", color = fg, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                            Text("RECOVERY • LEARNING • CONNECTION", color = muted, fontSize = 9.sp, letterSpacing = 1.sp)
+                        }
+                        Surface(color = card, shape = CircleShape, modifier = Modifier.clickable { light = !light }) {
+                            Text(if (light) "☾" else "☼", color = fg, modifier = Modifier.padding(12.dp))
+                        }
                     }
                 }
+                item {
+                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF1A3340), Color(0xFF242344))), RoundedCornerShape(25.dp)).border(1.dp, Color(0xFF3B5366), RoundedCornerShape(25.dp)).padding(22.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("YOUR NEXT CHAPTER", color = mint, fontSize = 10.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
+                        Text("A second chance,\ngrounded in hope.", color = Color.White, fontSize = 29.sp, lineHeight = 35.sp, fontWeight = FontWeight.Bold)
+                        Text("Small steps. Real people. Evidence-informed support.", color = Color(0xFFD2D9E8), fontSize = 14.sp, lineHeight = 21.sp)
+                        Surface(color = mint, shape = RoundedCornerShape(14.dp), modifier = Modifier.clickable { group = "Support"; expanded = null }) {
+                            Text("Explore support  →", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+                        }
+                    }
+                }
+                item {
+                    Text("Find your next step", color = fg, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(8.dp))
+                    Surface(color = card, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(14.dp)) {
+                            Text("⌕", color = mint, fontSize = 22.sp)
+                            Spacer(Modifier.width(10.dp))
+                            BasicTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(color = fg, fontSize = 14.sp), decorationBox = { inner ->
+                                Box { if (query.isEmpty()) Text("Search support, learning, work…", color = muted, fontSize = 14.sp); inner() }
+                            })
+                        }
+                    }
+                }
+                item {
+                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        groups.forEach { g ->
+                            val active = group == g
+                            Surface(color = if (active) mint else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { group = g; expanded = null }) {
+                                Text(g, color = if (active) ink else fg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+                            }
+                        }
+                    }
+                }
+                item { Text("Explore resources", color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
+                items(shown) { r ->
+                    Card(Modifier.fillMaxWidth().clickable { expanded = if (expanded == r.title) null else r.title }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
+                        Column(Modifier.padding(17.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Box(Modifier.size(44.dp).background(if (r.group == "Support") Color(0xFF203D3C) else Color(0xFF292746), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
+                                    Text(r.mark, color = mint, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                                }
+                                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(r.title, color = fg, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                    Text(r.subtitle, color = muted, fontSize = 12.sp, lineHeight = 17.sp)
+                                }
+                                Text(if (expanded == r.title) "−" else "+", color = mint, fontSize = 22.sp)
+                            }
+                            Text(r.group.uppercase(), color = violet, fontSize = 10.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+                            if (expanded == r.title) {
+                                Text(r.detail, color = fg, fontSize = 13.sp, lineHeight = 20.sp)
+                                Text("General information only • Verify locally", color = muted, fontSize = 11.sp)
+                            }
+                        }
+                    }
+                }
+                item {
+                    Column(Modifier.fillMaxWidth().background(card, RoundedCornerShape(18.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                        Text("A note on safety", color = fg, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text("BlumTherapy is an early informational prototype, not a treatment provider or emergency service. Resources, eligibility and availability must be verified in your country. If you may be in immediate danger, contact local emergency services.", color = muted, fontSize = 12.sp, lineHeight = 18.sp)
+                        Text("Privacy-first • No account required • Content stored locally", color = mint, fontSize = 10.sp)
+                    }
+                }
+                item { Text("You deserve support without judgment. One step at a time.", color = muted, fontSize = 11.sp, lineHeight = 17.sp) }
             }
         }
     }
