@@ -22,3 +22,11 @@ Never display one emergency number as universal. If location is unknown, do not 
 - [SAMHSA Recovery and Support](https://www.samhsa.gov/substance-use/recovery)
 
 Reviewed 2026-10-12. Reopen sources and verify operational details before shipping live listings.
+
+
+## Partnership and incentive discovery
+Potential partner categories include public health systems, accredited treatment providers, workforce agencies, vocational education programs, community colleges, employers, recovery housing organizations, libraries, sports and arts programs, food/housing assistance charities, and peer-support organizations. A listing is not a partnership.
+
+Before displaying a material incentive, record the named sponsor, written authorization, confirmed budget, number of places, dates, eligibility, accessibility, selection method, privacy terms, complaint route, and fulfilment owner. Never imply a benefit is available merely because a public program exists. Do not pay users for testimonials or require public disclosure of recovery status.
+
+For any clinical contingency-management program, require qualified clinical leadership, an evidence-informed protocol, consent, privacy protection, and applicable ethics/legal review. A generic app badge or informal coupon is not a substitute for treatment.
