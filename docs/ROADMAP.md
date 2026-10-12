@@ -1,22 +1,30 @@
 # Roadmap
 
 ## Foundation
-- [x] Repository documentation and contribution rules.
-- [x] Minimal Kotlin/Compose entry screen.
-- [x] Basic CI workflow.
-- [ ] Add and verify the Gradle wrapper.
-- [ ] Add unit and UI test baselines.
+- [x] Kotlin/Compose starter screen.
+- [x] AndroidX/Gradle build defaults and CI workflow.
+- [x] International resource and evidence research documents.
+- [ ] Confirm a successful CI build on main.
+- [ ] Add and verify Gradle Wrapper.
+- [ ] Add unit/UI test baselines.
 
-## Utilities
-- [ ] Read-only Android version and capability summary.
-- [ ] Guided diagnostic checklist engine.
-- [ ] Privacy-safe diagnostic preview with redaction.
-- [ ] Offline help content.
+## Recovery support
+- [ ] Define resource and evidence schemas.
+- [ ] Implement country/region selection without inferring a user's location.
+- [ ] Build a directory with source attribution, verification status, and freshness labels.
+- [ ] Add country-specific crisis information with manual review.
+- [ ] Add user-controlled goals and private, non-punitive milestones.
 
-## Quality
-- [ ] Accessibility review.
-- [ ] Permission and dependency review.
-- [ ] Threat model for system-facing features.
-- [ ] Documented release and signing process.
+## Responsible incentives
+- [ ] Start with symbolic milestones only.
+- [ ] Design a documented sponsor/benefit model before showing material rewards.
+- [ ] Require clinical, privacy, and legal review for any contingency-management pilot.
 
-Only mark items complete when implementation and validation exist.
+## Quality and governance
+- [ ] Accessibility and localization review.
+- [ ] Dependency and threat-model review.
+- [ ] Clinical review of all health claims.
+- [ ] Lived-experience review of language and user flows.
+- [ ] Privacy impact assessment before collecting sensitive information.
+
+Only mark a feature complete after implementation, review, and validation.
