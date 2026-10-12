@@ -31,3 +31,10 @@ jobs:
           gradle-version: '8.11.1'
       - name: Build debug APK
         run: gradle assembleDebug
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BlumTherapy-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
