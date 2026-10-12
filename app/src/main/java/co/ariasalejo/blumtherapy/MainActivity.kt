@@ -1,5 +1,7 @@
 package co.ariasalejo.blumtherapy
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +39,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private data class Resource(val title: String, val group: String, val subtitle: String, val detail: String, val mark: String)
+private data class Resource(val title: String, val group: String, val subtitle: String, val detail: String, val mark: String, val country: String = "General", val officialUrl: String? = null, val status: String = "Unreviewed")
 
 private val resources = listOf(
     Resource("Find professional support", "Support", "Treatment pathways and peer support", "Start with a qualified health professional or an official local treatment directory. Confirm eligibility, cost, opening hours and availability directly with the provider.", "♡"),
@@ -45,7 +48,11 @@ private val resources = listOf(
     Resource("Work with purpose", "Work", "Job readiness and meaningful activity", "Build a simple CV, identify one skill to practice and explore public employment services. This app does not promise jobs, income or acceptance.", "⌁"),
     Resource("My next small step", "Progress", "Choose a realistic goal for today", "Choose one small action you control, such as contacting a trusted person, taking a walk or reviewing a learning resource. A setback never removes your dignity.", "✓"),
     Resource("Support for family", "Community", "Listen without blame or pressure", "Ask what kind of support the person wants, listen without judgment and offer practical help. Respect boundaries and seek professional guidance when needed.", "♡"),
-    Resource("Evidence and recovery", "Learning", "Understand evidence and its limits", "Health information should come from reputable, traceable sources and explain uncertainty. This app does not diagnose, prescribe or replace professional care.", "⌘")
+    Resource("Evidence and recovery", "Learning", "Understand evidence and its limits", "Health information should come from reputable, traceable sources and explain uncertainty. This app does not diagnose, prescribe or replace professional care.", "⌘", "Global", "https://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders", "Official guidance · not a local service"),
+    Resource("FindTreatment.gov · United States", "Support", "Official treatment locator", "A government locator for mental-health and substance-use services. Confirm facility services, eligibility, cost, insurance and availability directly.", "↗", "United States", "https://www.findtreatment.gov/", "Official directory · verify each listing"),
+    Resource("NHS drug support · United Kingdom", "Support", "Official treatment information", "Start with NHS guidance and confirm the relevant UK nation and local service. Availability and pathways differ by location.", "↗", "United Kingdom", "https://www.nhs.uk/live-well/addiction-support/drug-addiction-getting-help/", "Official information · local details vary"),
+    Resource("Health Canada · Canada", "Support", "Treatment and support options", "Explore official information about treatment and support. Provincial and territorial access, cost and availability differ.", "↗", "Canada", "https://www.canada.ca/en/health-canada/services/substance-use/treatment.html", "Official information · local details vary"),
+    Resource("Drug Help · Australia", "Support", "Australian Government resource finder", "Use official government information and confirm state or territory, current contact details and local availability before relying on a service.", "↗", "Australia", "https://www.health.gov.au/our-work/drug-help", "Official information · recheck contacts")
 )
 
 private val ink = Color(0xFF0B1020)
@@ -60,8 +67,11 @@ private fun BlumTherapyApp() {
     var group by remember { mutableStateOf("All") }
     var expanded by remember { mutableStateOf<String?>(null) }
     var light by remember { mutableStateOf(false) }
+    var country by remember { mutableStateOf("All") }
+    val context = LocalContext.current
     val groups = listOf("All", "Support", "Wellbeing", "Learning", "Work", "Progress", "Community")
-    val shown = resources.filter { (group == "All" || it.group == group) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true)) }
+    val countries = listOf("All", "General", "United States", "United Kingdom", "Canada", "Australia", "Global")
+    val shown = resources.filter { (group == "All" || it.group == group) && (country == "All" || it.country == country) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true)) }
     val bg = if (light) Color(0xFFF4F7FB) else ink
     val fg = if (light) Color(0xFF152039) else Color(0xFFF4F7FF)
     val card = if (light) Color.White else panel
@@ -115,6 +125,18 @@ private fun BlumTherapyApp() {
                         }
                     }
                 }
+                item {
+                    Text("Choose a country or scope", color = fg, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                    Spacer(Modifier.height(7.dp))
+                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        countries.forEach { c ->
+                            val active = country == c
+                            Surface(color = if (active) violet else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { country = c; expanded = null }) {
+                                Text(c, color = if (active) ink else fg, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp))
+                            }
+                        }
+                    }
+                }
                 item { Text("Explore resources", color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
                 items(shown) { r ->
                     Card(Modifier.fillMaxWidth().clickable { expanded = if (expanded == r.title) null else r.title }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
@@ -132,7 +154,13 @@ private fun BlumTherapyApp() {
                             Text(r.group.uppercase(), color = violet, fontSize = 10.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
                             if (expanded == r.title) {
                                 Text(r.detail, color = fg, fontSize = 13.sp, lineHeight = 20.sp)
-                                Text("General information only • Verify locally", color = muted, fontSize = 11.sp)
+                                Text("${r.country} • ${r.status}", color = violet, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                                Text("General information only • Verify local availability, eligibility and cost", color = muted, fontSize = 11.sp, lineHeight = 16.sp)
+                                if (r.officialUrl != null) {
+                                    Surface(color = mint, shape = RoundedCornerShape(12.dp), modifier = Modifier.clickable { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(r.officialUrl))) }) {
+                                        Text("Open official source ↗", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+                                    }
+                                }
                             }
                         }
                     }
