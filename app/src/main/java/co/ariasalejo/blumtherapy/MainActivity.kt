@@ -80,7 +80,7 @@ private fun BlumTherapyApp() {
             LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(15.dp)) {
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Box(Modifier.size(46.dp).background(Brush.linearGradient(listOf(mint, violet)), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
+                        Box(Modifier.size(46.dp).background(Brush.linearGradient(listOf(mint, violet)), RoundedCornerShape(16.dp)).border(1.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
                             Text("B", color = ink, fontSize = 27.sp, fontWeight = FontWeight.Black)
                         }
                         Column(Modifier.weight(1f)) {
@@ -93,7 +93,7 @@ private fun BlumTherapyApp() {
                     }
                 }
                 item {
-                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF1A3340), Color(0xFF242344))), RoundedCornerShape(25.dp)).border(1.dp, Color(0xFF3B5366), RoundedCornerShape(25.dp)).padding(22.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF1A3340), Color(0xFF242344))), RoundedCornerShape(25.dp)).border(1.dp, mint.copy(alpha = 0.42f), RoundedCornerShape(25.dp)).padding(22.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text("YOUR NEXT CHAPTER", color = mint, fontSize = 10.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
                         Text("A second chance,\ngrounded in hope.", color = Color.White, fontSize = 29.sp, lineHeight = 35.sp, fontWeight = FontWeight.Bold)
                         Text("Small steps. Real people. Evidence-informed support.", color = Color(0xFFD2D9E8), fontSize = 14.sp, lineHeight = 21.sp)
