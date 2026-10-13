@@ -1,0 +1,1 @@
+"""Blumtherapy backend application package."""
