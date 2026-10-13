@@ -103,6 +103,16 @@ private fun BlumTherapyApp() {
                     }
                 }
                 item {
+                    PlannerPanel(
+                        heading = "Your plan, at your pace",
+                        intro = "Track small habits and dated tasks. Your entries stay on this device.",
+                        accent = mint,
+                        cardColor = card,
+                        textColor = fg,
+                        mutedColor = muted
+                    )
+                }
+                item {
                     Text("Find your next step", color = fg, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
                     Surface(color = card, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
