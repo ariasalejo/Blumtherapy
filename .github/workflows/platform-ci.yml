@@ -3,7 +3,7 @@ on:
   push:
     branches: [feat/futuristic-wellbeing-habits]
   pull_request:
-    branches: [main, feat/country-aware-resource-directory]
+    branches: [main, feat/futuristic-wellbeing-habits]
   workflow_dispatch:
 permissions:
   contents: read
