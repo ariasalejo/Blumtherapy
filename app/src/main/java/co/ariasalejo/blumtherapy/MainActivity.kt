@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -55,26 +56,27 @@ private val resources = listOf(
     Resource("Drug Help · Australia", "Support", "Australian Government resource finder", "Use official government information and confirm state or territory, current contact details and local availability before relying on a service.", "↗", "Australia", "https://www.health.gov.au/our-work/drug-help", "Official information · recheck contacts")
 )
 
-private val ink = Color(0xFF0B1020)
-private val panel = Color(0xFF141D32)
-private val mint = Color(0xFF67F5CE)
-private val violet = Color(0xFF9B8CFF)
-private val muted = Color(0xFFABB7CB)
+private val ink = Color(0xFF302A35)
+private val panel = Color(0xFF403746)
+private val mint = Color(0xFFCAD8B7)
+private val violet = Color(0xFFE4B49E)
+private val muted = Color(0xFFB6AEBB)
 
 @Composable
 private fun BlumTherapyApp() {
     var query by remember { mutableStateOf("") }
     var group by remember { mutableStateOf("All") }
     var expanded by remember { mutableStateOf<String?>(null) }
-    var light by remember { mutableStateOf(false) }
+    var light by remember { mutableStateOf(true) }
     var country by remember { mutableStateOf("All") }
     val context = LocalContext.current
     val groups = listOf("All", "Support", "Wellbeing", "Learning", "Work", "Progress", "Community")
     val countries = listOf("All", "General", "United States", "United Kingdom", "Canada", "Australia", "Global")
     val shown = resources.filter { (group == "All" || it.group == group) && (country == "All" || it.country == country) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true) || it.group.contains(query, true) || it.country.contains(query, true) || it.status.contains(query, true)) }
-    val bg = if (light) Color(0xFFF4F7FB) else ink
-    val fg = if (light) Color(0xFF152039) else Color(0xFFF4F7FF)
+    val bg = if (light) Color(0xFFFAF5F0) else ink
+    val fg = if (light) Color(0xFF312A34) else Color(0xFFFAF4F0)
     val card = if (light) Color.White else panel
+    val muted = if (light) Color(0xFF625965) else Color(0xFFB6AEBB)
     MaterialTheme {
         Surface(Modifier.fillMaxSize(), color = bg) {
             LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(15.dp)) {
@@ -85,7 +87,7 @@ private fun BlumTherapyApp() {
                         }
                         Column(Modifier.weight(1f)) {
                             Text("BlumTherapy", color = fg, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                            Text("RECOVERY • LEARNING • CONNECTION", color = muted, fontSize = 9.sp, letterSpacing = 1.sp)
+                            Text("WELLBEING • RECOVERY • CONNECTION", color = muted, fontSize = 9.sp, letterSpacing = 1.sp)
                         }
                         Surface(color = card, shape = CircleShape, modifier = Modifier.clickable { light = !light }) {
                             Text(if (light) "☾" else "☼", color = fg, modifier = Modifier.padding(12.dp))
@@ -93,11 +95,11 @@ private fun BlumTherapyApp() {
                     }
                 }
                 item {
-                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF1A3340), Color(0xFF242344))), RoundedCornerShape(25.dp)).border(1.dp, mint.copy(alpha = 0.42f), RoundedCornerShape(25.dp)).padding(22.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("YOUR NEXT CHAPTER", color = mint, fontSize = 10.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
-                        Text("A second chance,\ngrounded in hope.", color = Color.White, fontSize = 29.sp, lineHeight = 35.sp, fontWeight = FontWeight.Bold)
-                        Text("Small steps. Real people. Evidence-informed support.", color = Color(0xFFD2D9E8), fontSize = 14.sp, lineHeight = 21.sp)
-                        Surface(color = mint, shape = RoundedCornerShape(14.dp), modifier = Modifier.clickable { group = "Support"; expanded = null }) {
+                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF4B3A4B), Color(0xFF735052))), RoundedCornerShape(28.dp)).border(1.dp, violet.copy(alpha = 0.65f), RoundedCornerShape(28.dp)).padding(23.dp), verticalArrangement = Arrangement.spacedBy(13.dp)) {
+                        Text("A GENTLER WAY FORWARD", color = Color(0xFFEAD8C8), fontSize = 10.sp, letterSpacing = 1.6.sp, fontWeight = FontWeight.Bold)
+                        Text("You can start\nwhere you are.", color = Color.White, fontSize = 32.sp, lineHeight = 38.sp, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Medium)
+                        Text("Gentle tools, trusted information and support for the step you feel ready to take.", color = Color(0xFFF1E7E5), fontSize = 14.sp, lineHeight = 22.sp)
+                        Surface(color = Color(0xFFCAD8B7), shape = RoundedCornerShape(14.dp), modifier = Modifier.clickable { group = "Support"; expanded = null }) {
                             Text("Explore support  →", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
                         }
                     }
