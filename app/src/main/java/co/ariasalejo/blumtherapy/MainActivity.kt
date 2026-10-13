@@ -71,7 +71,7 @@ private fun BlumTherapyApp() {
     val context = LocalContext.current
     val groups = listOf("All", "Support", "Wellbeing", "Learning", "Work", "Progress", "Community")
     val countries = listOf("All", "General", "United States", "United Kingdom", "Canada", "Australia", "Global")
-    val shown = resources.filter { (group == "All" || it.group == group) && (country == "All" || it.country == country) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true)) }
+    val shown = resources.filter { (group == "All" || it.group == group) && (country == "All" || it.country == country) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true) || it.group.contains(query, true) || it.country.contains(query, true) || it.status.contains(query, true)) }
     val bg = if (light) Color(0xFFF4F7FB) else ink
     val fg = if (light) Color(0xFF152039) else Color(0xFFF4F7FF)
     val card = if (light) Color.White else panel
@@ -137,8 +137,19 @@ private fun BlumTherapyApp() {
                         }
                     }
                 }
-                item { Text("Explore resources", color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
-                items(shown) { r ->
+                item { Text("Explore resources · ${shown.size}", color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
+                if (shown.isEmpty()) {
+                    item {
+                        Column(Modifier.fillMaxWidth().background(card, RoundedCornerShape(20.dp)).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("No matches yet", color = fg, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text("Try another search or reset the category and country filters.", color = muted, fontSize = 13.sp, lineHeight = 19.sp)
+                            Surface(color = mint, shape = RoundedCornerShape(12.dp), modifier = Modifier.clickable { query = ""; group = "All"; country = "All"; expanded = null }) {
+                                Text("Clear filters", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 11.dp))
+                            }
+                        }
+                    }
+                }
+                items(shown, key = { it.title }) { r ->
                     Card(Modifier.fillMaxWidth().clickable { expanded = if (expanded == r.title) null else r.title }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
                         Column(Modifier.padding(17.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
