@@ -1,4 +1,4 @@
-package co.ariasalejo.blumtherapy__
+package co.ariasalejo.blumtherapy
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
