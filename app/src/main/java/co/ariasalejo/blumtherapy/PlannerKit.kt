@@ -1,6 +1,8 @@
 package co.ariasalejo.blumtherapy
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
