@@ -14,6 +14,36 @@ internal data class PlannerHabit(val id: String, val title: String, val complete
 internal data class PlannerTask(val id: String, val title: String, val dueDate: String, val completed: Boolean)
 internal data class PlannerSnapshot(val habits: List<PlannerHabit>, val tasks: List<PlannerTask>)
 
+internal data class PlannerOpportunity(
+    val title: String,
+    val jurisdiction: String,
+    val category: String,
+    val description: String,
+    val url: String,
+    val reviewedOn: String = "2026-10-12"
+)
+
+private fun plannerOpportunities(): List<PlannerOpportunity> = listOf(
+    PlannerOpportunity("USAGov · Benefits finder", "United States", "Public benefits",
+        "Explore federal support routes and check official eligibility rules for your circumstances.",
+        "https://www.usa.gov/benefit-finder"),
+    PlannerOpportunity("FindTreatment.gov", "United States", "Health support",
+        "Official locator for mental-health and substance-use treatment services; confirm cost and local availability directly.",
+        "https://findtreatment.gov/"),
+    PlannerOpportunity("GOV.UK · Benefits", "United Kingdom", "Public benefits",
+        "Browse official information about benefits, eligibility, claims, appeals and support while looking for work.",
+        "https://www.gov.uk/browse/benefits"),
+    PlannerOpportunity("Canada · Benefits Finder", "Canada · Federal", "Public benefits",
+        "Find federal programs and then follow provincial or territorial links where relevant; this tool does not determine eligibility.",
+        "https://www.canada.ca/en/services/benefits/finder.html"),
+    PlannerOpportunity("Services Australia · Payment Finder", "Australia", "Payments and support",
+        "Estimate or compare payments and inspect the conditions from the Australian Government before planning around a payment.",
+        "https://www.servicesaustralia.gov.au/online-estimators?context=64107"),
+    PlannerOpportunity("NHS · Your Mind Plan (18+)", "United Kingdom · England / NHS", "Wellbeing planning",
+        "A general wellbeing action plan for adults; it is not a medical assessment and does not replace professional advice.",
+        "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/your-mind-plan-quiz/")
+)
+
 /** Private, local-only persistence for the first planner phase. */
 internal object PlannerStore {
     private const val PREFS_NAME = "blumtherapy_planner_v1"
@@ -156,6 +186,7 @@ internal fun PlannerPanel(
     val today = PlannerStore.today()
     val completedCount = snapshot.habits.count { today in it.completedDates }
     val taskList = snapshot.tasks.sortedWith(compareBy<PlannerTask>({ it.completed }, { it.dueDate }))
+    val opportunities = plannerOpportunities()
     val ink = androidx.compose.ui.graphics.Color(0xFF0B1020)
 
     androidx.compose.material3.Card(
@@ -299,6 +330,31 @@ internal fun PlannerPanel(
                                 snapshot = PlannerStore.load(context, starterHabits)
                             }.padding(5.dp)
                         )
+                    }
+                }
+                androidx.compose.material3.Text("Official opportunities & support", color = textColor, fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                androidx.compose.material3.Text(
+                    "Official starting points only. Rules, opening dates and eligibility can change; confirm details with the institution.",
+                    color = mutedColor, fontSize = 12.sp, lineHeight = 17.sp
+                )
+                opportunities.forEach { opportunity ->
+                    androidx.compose.material3.Card(
+                        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = cardColor),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                    ) {
+                        androidx.compose.foundation.layout.Column(
+                            modifier = androidx.compose.ui.Modifier.padding(13.dp),
+                            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)
+                        ) {
+                            androidx.compose.material3.Text(opportunity.title, color = textColor, fontSize = 14.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                            androidx.compose.material3.Text(opportunity.jurisdiction + " · " + opportunity.category, color = accent, fontSize = 11.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
+                            androidx.compose.material3.Text(opportunity.description, color = mutedColor, fontSize = 12.sp, lineHeight = 17.sp)
+                            androidx.compose.material3.Button(
+                                onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(opportunity.url))) },
+                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = accent, contentColor = ink)
+                            ) { androidx.compose.material3.Text("Open official source ↗") }
+                            androidx.compose.material3.Text("Catalogue checked: " + opportunity.reviewedOn, color = mutedColor, fontSize = 10.sp)
+                        }
                     }
                 }
                 androidx.compose.material3.Text(
