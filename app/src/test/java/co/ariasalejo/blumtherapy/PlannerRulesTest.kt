@@ -13,6 +13,14 @@ class PlannerRulesTest {
     }
 
     @Test
+    fun datePickerRoundTripsUsingUtcWithoutShiftingCalendarDay() {
+        val selected = PlannerRules.dateToUtcMillis("2026-10-12")
+        assertEquals("2026-10-12", PlannerRules.dateFromUtcMillis(selected))
+        assertNull(PlannerRules.dateToUtcMillis("2026-02-29"))
+        assertNull(PlannerRules.dateFromUtcMillis(null))
+    }
+
+    @Test
     fun habitCompletionIsIdempotentAndPreservesOtherDays() {
         val previous = setOf("2026-10-10")
         val completed = PlannerRules.updateCompletionDates(previous, "2026-10-12", true)
