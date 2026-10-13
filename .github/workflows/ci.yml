@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feat/futuristic-wellbeing-habits]
   pull_request:
-    branches: [main]
+    branches: [main, feat/country-aware-resource-directory]
   workflow_dispatch:
 
 permissions:
