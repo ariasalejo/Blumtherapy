@@ -13,23 +13,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -40,164 +34,249 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private data class Resource(val title: String, val group: String, val subtitle: String, val detail: String, val mark: String, val country: String = "General", val officialUrl: String? = null, val status: String = "Unreviewed")
+private val Aubergine = Color(0xFF352B3C)
+private val Plum = Color(0xFF694A65)
+private val Petal = Color(0xFFEDC2B0)
+private val Sage = Color(0xFFDBE4C5)
+private val Canvas = Color(0xFFFAF5F0)
+private val SoftText = Color(0xFF8B808D)
 
-private val resources = listOf(
-    Resource("Find professional support", "Support", "Treatment pathways and peer support", "Start with a qualified health professional or an official local treatment directory. Confirm eligibility, cost, opening hours and availability directly with the provider.", "♡"),
-    Resource("A steadier moment", "Wellbeing", "Small grounding and reflection exercises", "Pause, place both feet on the floor, breathe comfortably and name five things you can see. This self-care exercise is not a treatment or crisis service.", "✦"),
-    Resource("Learn a new skill", "Learning", "Training, education and digital skills", "Explore public education services in your country or region. Dates, entry requirements and fees vary; confirm current details with the official provider.", "↗"),
-    Resource("Work with purpose", "Work", "Job readiness and meaningful activity", "Build a simple CV, identify one skill to practice and explore public employment services. This app does not promise jobs, income or acceptance.", "⌁"),
-    Resource("My next small step", "Progress", "Choose a realistic goal for today", "Choose one small action you control, such as contacting a trusted person, taking a walk or reviewing a learning resource. A setback never removes your dignity.", "✓"),
-    Resource("Support for family", "Community", "Listen without blame or pressure", "Ask what kind of support the person wants, listen without judgment and offer practical help. Respect boundaries and seek professional guidance when needed.", "♡"),
-    Resource("Evidence and recovery", "Learning", "Understand evidence and its limits", "Health information should come from reputable, traceable sources and explain uncertainty. This app does not diagnose, prescribe or replace professional care.", "⌘", "Global", "https://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders", "Official guidance · not a local service"),
-    Resource("FindTreatment.gov · United States", "Support", "Official treatment locator", "A government locator for mental-health and substance-use services. Confirm facility services, eligibility, cost, insurance and availability directly.", "↗", "United States", "https://www.findtreatment.gov/", "Official directory · verify each listing"),
-    Resource("NHS drug support · United Kingdom", "Support", "Official treatment information", "Start with NHS guidance and confirm the relevant UK nation and local service. Availability and pathways differ by location.", "↗", "United Kingdom", "https://www.nhs.uk/live-well/addiction-support/drug-addiction-getting-help/", "Official information · local details vary"),
-    Resource("Health Canada · Canada", "Support", "Treatment and support options", "Explore official information about treatment and support. Provincial and territorial access, cost and availability differ.", "↗", "Canada", "https://www.canada.ca/en/health-canada/services/substance-use/treatment.html", "Official information · local details vary"),
-    Resource("Drug Help · Australia", "Support", "Australian Government resource finder", "Use official government information and confirm state or territory, current contact details and local availability before relying on a service.", "↗", "Australia", "https://www.health.gov.au/our-work/drug-help", "Official information · recheck contacts")
+private data class Resource(val title: String, val group: String, val subtitle: String, val detail: String, val mark: String, val country: String = "Global", val officialUrl: String? = null, val status: String = "Official starting point")
+private data class TherapyTab(val title: String, val icon: String)
+
+private val therapyResources = listOf(
+    Resource("FindTreatment.gov", "Support", "Official U.S. treatment locator", "Confirm facility services, eligibility, insurance, cost and availability directly.", "↗", "United States", "https://findtreatment.gov/", "Government directory · verify each listing"),
+    Resource("NHS: getting help for drug addiction", "Support", "Official UK treatment information", "Local services and pathways differ across UK nations. Check the current local route.", "♡", "United Kingdom", "https://www.nhs.uk/live-well/addiction-support/drug-addiction-getting-help/", "Official information · local details vary"),
+    Resource("Health Canada: treatment", "Support", "Canadian treatment and support options", "Provincial and territorial access and costs can differ. Confirm local conditions.", "↗", "Canada", "https://www.canada.ca/en/health-canada/services/substance-use/treatment.html", "Government information · local details vary"),
+    Resource("Drug Help", "Support", "Australian Government starting point", "Confirm state or territory, contact details and current service availability.", "⌘", "Australia", "https://www.health.gov.au/our-work/drug-help", "Government information · recheck current details"),
+    Resource("WHO: treatment standards", "Learning", "Evidence-informed treatment guidance", "International guidance for learning about quality care. This is not a local service.", "✧", "Global", "https://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders", "International guidance · not a local service"),
+    Resource("A steadier moment", "Wellbeing", "A short grounding practice", "Notice where you are, let your shoulders settle if that feels comfortable, and name a few things you can see. This is a self-care exercise, not a treatment or crisis service.", "◌"),
+    Resource("Learn a new skill", "Learning", "Training and curiosity, at your pace", "Explore official education and skills services in your country. Check current fees, requirements and dates directly.", "▤"),
+    Resource("Support for family", "Community", "Listen without blame or pressure", "Ask what kind of help the person wants, respect boundaries and seek qualified guidance when needed.", "♡")
 )
-
-private val ink = Color(0xFF302A35)
-private val panel = Color(0xFF403746)
-private val mint = Color(0xFFCAD8B7)
-private val violet = Color(0xFFE4B49E)
-private val muted = Color(0xFFB6AEBB)
 
 @Composable
 private fun BlumTherapyApp() {
+    var screen by remember { mutableStateOf("Home") }
     var query by remember { mutableStateOf("") }
     var group by remember { mutableStateOf("All") }
-    var expanded by remember { mutableStateOf<String?>(null) }
-    var light by remember { mutableStateOf(true) }
     var country by remember { mutableStateOf("All") }
+    var opened by remember { mutableStateOf<Resource?>(null) }
+    var light by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    val tabs = listOf(TherapyTab("Home", "⌂"), TherapyTab("My plan", "◷"), TherapyTab("Library", "✧"), TherapyTab("Support", "♡"), TherapyTab("My progress", "⌁"))
     val groups = listOf("All", "Support", "Wellbeing", "Learning", "Work", "Progress", "Community")
     val countries = listOf("All", "General", "United States", "United Kingdom", "Canada", "Australia", "Global")
-    val shown = resources.filter { (group == "All" || it.group == group) && (country == "All" || it.country == country) && (query.isBlank() || it.title.contains(query, true) || it.subtitle.contains(query, true) || it.detail.contains(query, true) || it.group.contains(query, true) || it.country.contains(query, true) || it.status.contains(query, true)) }
-    val bg = if (light) Color(0xFFFAF5F0) else ink
-    val fg = if (light) Color(0xFF312A34) else Color(0xFFFAF4F0)
-    val card = if (light) Color.White else panel
+    val bg = if (light) Canvas else Color(0xFF211B27)
+    val fg = if (light) Aubergine else Color(0xFFFAF4F0)
+    val card = if (light) Color.White else Color(0xFF403746)
     val muted = if (light) Color(0xFF625965) else Color(0xFFB6AEBB)
+    val accent = if (light) Plum else Petal
+    val shown = therapyResources.filter { r ->
+        val inScreen = when (screen) {
+            "Library" -> r.group in listOf("Learning", "Wellbeing")
+            "Support" -> r.group in listOf("Support", "Community")
+            else -> false
+        }
+        val countryMatch = country == "All" || r.country == "Global" && country == "Global" || r.country.equals(country, true)
+        inScreen && (group == "All" || r.group == group) && countryMatch &&
+            (query.isBlank() || listOf(r.title, r.subtitle, r.detail, r.group, r.country).any { it.contains(query, true) })
+    }
+
     MaterialTheme {
         Surface(Modifier.fillMaxSize(), color = bg) {
-            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(15.dp)) {
-                item {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Box(Modifier.size(46.dp).background(Brush.linearGradient(listOf(mint, violet)), RoundedCornerShape(16.dp)).border(1.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-                            Text("B", color = ink, fontSize = 27.sp, fontWeight = FontWeight.Black)
-                        }
-                        Column(Modifier.weight(1f)) {
-                            Text("BlumTherapy", color = fg, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                            Text("WELLBEING • RECOVERY • CONNECTION", color = muted, fontSize = 9.sp, letterSpacing = 1.sp)
-                        }
-                        Surface(color = card, shape = CircleShape, modifier = Modifier.clickable { light = !light }) {
-                            Text(if (light) "☾" else "☼", color = fg, modifier = Modifier.padding(12.dp))
-                        }
+            Column(Modifier.fillMaxSize()) {
+                Row(
+                    Modifier.fillMaxWidth().background(card).border(1.dp, fg.copy(alpha = 0.05f)).padding(horizontal = 18.dp, vertical = 13.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(11.dp)
+                ) {
+                    Box(Modifier.size(43.dp).clip(RoundedCornerShape(15.dp)).background(Brush.linearGradient(listOf(Petal, Sage))), contentAlignment = Alignment.Center) {
+                        Text("b.", color = Aubergine, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text("BLUMTHERAPY", color = fg, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.5.sp)
+                        Text("WELLBEING · GENTLE RECOVERY", color = accent, fontSize = 8.sp, letterSpacing = 1.sp)
+                    }
+                    Surface(color = bg, shape = RoundedCornerShape(12.dp), modifier = Modifier.clickable { light = !light }) {
+                        Text(if (light) "☾" else "☼", color = fg, modifier = Modifier.padding(10.dp), fontSize = 17.sp)
                     }
                 }
-                item {
-                    Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF4B3A4B), Color(0xFF735052))), RoundedCornerShape(28.dp)).border(1.dp, violet.copy(alpha = 0.65f), RoundedCornerShape(28.dp)).padding(23.dp), verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                        Text("A GENTLER WAY FORWARD", color = Color(0xFFEAD8C8), fontSize = 10.sp, letterSpacing = 1.6.sp, fontWeight = FontWeight.Bold)
-                        Text("You can start\nwhere you are.", color = Color.White, fontSize = 32.sp, lineHeight = 38.sp, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Medium)
-                        Text("Gentle tools, trusted information and support for the step you feel ready to take.", color = Color(0xFFF1E7E5), fontSize = 14.sp, lineHeight = 22.sp)
-                        Surface(color = Color(0xFFCAD8B7), shape = RoundedCornerShape(14.dp), modifier = Modifier.clickable { group = "Support"; expanded = null }) {
-                            Text("Explore support  →", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
-                        }
-                    }
-                }
-                item {
-                    PlannerPanel(
-                        heading = "Your plan, at your pace",
-                        intro = "Track small habits and dated tasks. Your entries stay on this device.",
-                        accent = mint,
-                        cardColor = card,
-                        textColor = fg,
-                        mutedColor = muted,
-                        languageCode = "en"
-                    )
-                }
-                item {
-                    Text("Find your next step", color = fg, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(8.dp))
-                    Surface(color = card, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(14.dp)) {
-                            Text("⌕", color = mint, fontSize = 22.sp)
-                            Spacer(Modifier.width(10.dp))
-                            BasicTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), singleLine = true, textStyle = TextStyle(color = fg, fontSize = 14.sp), decorationBox = { inner ->
-                                Box { if (query.isEmpty()) Text("Search support, learning, work…", color = muted, fontSize = 14.sp); inner() }
-                            })
-                        }
-                    }
-                }
-                item {
-                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        groups.forEach { g ->
-                            val active = group == g
-                            Surface(color = if (active) mint else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { group = g; expanded = null }) {
-                                Text(g, color = if (active) ink else fg, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
-                            }
-                        }
-                    }
-                }
-                item {
-                    Text("Choose a country or scope", color = fg, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                    Spacer(Modifier.height(7.dp))
-                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        countries.forEach { c ->
-                            val active = country == c
-                            Surface(color = if (active) violet else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { country = c; expanded = null }) {
-                                Text(c, color = if (active) ink else fg, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp))
-                            }
-                        }
-                    }
-                }
-                item { Text("Explore resources · ${shown.size}", color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
-                if (shown.isEmpty()) {
-                    item {
-                        Column(Modifier.fillMaxWidth().background(card, RoundedCornerShape(20.dp)).padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("No matches yet", color = fg, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-                            Text("Try another search or reset the category and country filters.", color = muted, fontSize = 13.sp, lineHeight = 19.sp)
-                            Surface(color = mint, shape = RoundedCornerShape(12.dp), modifier = Modifier.clickable { query = ""; group = "All"; country = "All"; expanded = null }) {
-                                Text("Clear filters", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 11.dp))
-                            }
-                        }
-                    }
-                }
-                items(shown, key = { it.title }) { r ->
-                    Card(Modifier.fillMaxWidth().clickable { expanded = if (expanded == r.title) null else r.title }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
-                        Column(Modifier.padding(17.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                Box(Modifier.size(44.dp).background(if (r.group == "Support") Color(0xFF203D3C) else Color(0xFF292746), RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
-                                    Text(r.mark, color = mint, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                LazyColumn(
+                    Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 17.dp),
+                    verticalArrangement = Arrangement.spacedBy(13.dp)
+                ) {
+                    when (screen) {
+                        "Home" -> {
+                            item {
+                                Column(
+                                    Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp))
+                                        .background(Brush.linearGradient(listOf(Color(0xFF392D43), Color(0xFF67465E), Color(0xFF84565B))))
+                                        .border(1.dp, Petal.copy(alpha = 0.3f), RoundedCornerShape(28.dp)).padding(23.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Text("A GENTLER WAY FORWARD", color = Petal, fontSize = 9.sp, letterSpacing = 1.5.sp, fontWeight = FontWeight.Bold)
+                                    Text("You can start where you are.", color = Color.White, fontSize = 31.sp, lineHeight = 36.sp, fontWeight = FontWeight.Bold)
+                                    Text("A calm space to rebuild routines, find trusted support and move at a pace that respects your life.", color = Color(0xFFF0E4EC), fontSize = 13.sp, lineHeight = 20.sp)
+                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        Surface(color = Sage, shape = RoundedCornerShape(13.dp), modifier = Modifier.clickable { screen = "My plan" }) {
+                                            Text("Shape my day ↗", color = Aubergine, fontWeight = FontWeight.Bold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp))
+                                        }
+                                        Surface(color = Color.White.copy(alpha = 0.10f), shape = RoundedCornerShape(13.dp), modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.24f), RoundedCornerShape(13.dp)).clickable { screen = "Support" }) {
+                                            Text("Find support", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                                        }
+                                    }
                                 }
-                                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text(r.title, color = fg, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                    Text(r.subtitle, color = muted, fontSize = 12.sp, lineHeight = 17.sp)
-                                }
-                                Text(if (expanded == r.title) "−" else "+", color = mint, fontSize = 22.sp)
                             }
-                            Text(r.group.uppercase(), color = violet, fontSize = 10.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
-                            if (expanded == r.title) {
-                                Text(r.detail, color = fg, fontSize = 13.sp, lineHeight = 20.sp)
-                                Text("${r.country} • ${r.status}", color = violet, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
-                                Text("General information only • Verify local availability, eligibility and cost", color = muted, fontSize = 11.sp, lineHeight = 16.sp)
-                                if (r.officialUrl != null) {
-                                    Surface(color = mint, shape = RoundedCornerShape(12.dp), modifier = Modifier.clickable { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(r.officialUrl))) }) {
-                                        Text("Open official source ↗", color = ink, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp))
+                            item {
+                                Text("Small steps, built around you", color = fg, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                Text("Choose a starting point. There is no required path and no streak to protect.", color = muted, fontSize = 12.sp, lineHeight = 18.sp)
+                            }
+                            item {
+                                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                                    TherapyShortcut("◷", "My plan", "Habits and dates", Modifier.weight(1f)) { screen = "My plan" }
+                                    TherapyShortcut("✧", "Library", "Learn at your pace", Modifier.weight(1f)) { screen = "Library" }
+                                }
+                            }
+                            item {
+                                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
+                                    Column(Modifier.padding(17.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                                        Text("✧  Keep this close", color = accent, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                        Text("A difficult day does not erase your effort. You can pause, choose a smaller step or ask for help.", color = fg, fontSize = 12.sp, lineHeight = 18.sp)
+                                        Text("Your habits and dated tasks remain on this device.", color = accent, fontSize = 10.sp)
+                                    }
+                                }
+                            }
+                        }
+                        "My plan" -> item {
+                            PlannerPanel(
+                                heading = "Your plan, at your pace",
+                                intro = "Choose small habits, review dates and record the steps you wanted to try. Pause and adjust without losing your history.",
+                                accent = accent,
+                                cardColor = card,
+                                textColor = fg,
+                                mutedColor = muted,
+                                languageCode = "en"
+                            )
+                        }
+                        "My progress" -> {
+                            item {
+                                Text("Your journey is not a race", color = fg, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+                                Text("Notice what helped you keep going, not whether you protected a perfect streak.", color = muted, fontSize = 12.sp, lineHeight = 18.sp)
+                            }
+                            item {
+                                PlannerPanel(
+                                    heading = "Your personal journey",
+                                    intro = "Review check-ins by date. Blank days are not failures and rest does not delete progress.",
+                                    accent = accent,
+                                    cardColor = card,
+                                    textColor = fg,
+                                    mutedColor = muted,
+                                    languageCode = "en"
+                                )
+                            }
+                        }
+                        "Support", "Library" -> {
+                            item {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text(if (screen == "Library") "Ideas for your next chapter" else "Trusted support, without empty promises", color = fg, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                                    Text(if (screen == "Library") "Learning and gentle practices, explored on your terms." else "Official starting points. Confirm coverage, eligibility, cost and local availability directly.", color = muted, fontSize = 12.sp, lineHeight = 18.sp)
+                                    OutlinedTextField(value = query, onValueChange = { query = it }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), singleLine = true, placeholder = { Text("Search resources or countries…") })
+                                }
+                            }
+                            if (screen == "Support") {
+                                item {
+                                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        groups.filter { it in listOf("All", "Support", "Community") }.forEach { g ->
+                                            Surface(color = if (group == g) accent else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { group = g }) {
+                                                Text(g, color = if (group == g) Color.White else fg, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 13.dp, vertical = 9.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            item {
+                                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    countries.forEach { c ->
+                                        Surface(color = if (country == c) Petal else card, shape = RoundedCornerShape(50), modifier = Modifier.clickable { country = c }) {
+                                            Text(c, color = if (country == c) Aubergine else fg, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp))
+                                        }
+                                    }
+                                }
+                            }
+                            if (opened != null) {
+                                item {
+                                    val r = opened!!
+                                    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = card)) {
+                                        Column(Modifier.padding(17.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                            Text(r.mark, fontSize = 28.sp, color = accent)
+                                            Text(r.title, color = fg, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                                            Text(r.detail, color = fg, fontSize = 13.sp, lineHeight = 19.sp)
+                                            Text(r.country + " · " + r.status, color = accent, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                                            Text("This is a starting point, not confirmation of care, eligibility or cost.", color = muted, fontSize = 11.sp, lineHeight = 16.sp)
+                                            r.officialUrl?.let { url -> Button(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }) { Text("Open official source ↗") } }
+                                            OutlinedButton(onClick = { opened = null }) { Text("Back to resources") }
+                                        }
+                                    }
+                                }
+                            }
+                            items(shown, key = { it.title }) { r ->
+                                Card(Modifier.fillMaxWidth().clickable { opened = r }, shape = RoundedCornerShape(19.dp), colors = CardDefaults.cardColors(containerColor = card), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+                                    Row(Modifier.padding(15.dp), horizontalArrangement = Arrangement.spacedBy(13.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Box(Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)).background(Brush.linearGradient(listOf(Petal.copy(alpha = .55f), Sage))), contentAlignment = Alignment.Center) {
+                                            Text(r.mark, color = Aubergine, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                                        }
+                                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                                            Text(r.title, color = fg, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                            Text(r.subtitle, color = muted, fontSize = 11.sp, lineHeight = 16.sp)
+                                            Text(r.group.uppercase() + " · " + r.country.uppercase(), color = accent, fontSize = 8.sp, fontWeight = FontWeight.Bold, letterSpacing = .6.sp)
+                                        }
+                                        Text("›", color = accent, fontSize = 24.sp)
+                                    }
+                                }
+                            }
+                            if (shown.isEmpty()) item {
+                                Card(shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = card)) {
+                                    Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("No matches yet", color = fg, fontWeight = FontWeight.Bold)
+                                        Text("Try another search or reset the country filter.", color = muted, fontSize = 12.sp, textAlign = TextAlign.Center)
+                                        Button(onClick = { query = ""; group = "All"; country = "All"; opened = null }) { Text("Clear search") }
                                     }
                                 }
                             }
                         }
                     }
+                    item { Text("You deserve support without judgment. One step at a time.", Modifier.fillMaxWidth().padding(vertical = 8.dp), color = muted, fontSize = 9.sp, textAlign = TextAlign.Center) }
                 }
-                item {
-                    Column(Modifier.fillMaxWidth().background(card, RoundedCornerShape(18.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                        Text("A note on safety", color = fg, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        Text("BlumTherapy is an early informational prototype, not a treatment provider or emergency service. Resources, eligibility and availability must be verified in your country. If you may be in immediate danger, contact local emergency services.", color = muted, fontSize = 12.sp, lineHeight = 18.sp)
-                        Text("Privacy-first • No account required • Content stored locally", color = mint, fontSize = 10.sp)
+
+                Row(Modifier.fillMaxWidth().background(card).border(1.dp, fg.copy(alpha = .06f)).padding(horizontal = 4.dp, vertical = 7.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+                    tabs.forEach { tab ->
+                        Column(
+                            Modifier.weight(1f).clip(RoundedCornerShape(13.dp))
+                                .background(if (screen == tab.title) accent.copy(alpha = .15f) else Color.Transparent)
+                                .clickable { screen = tab.title; query = ""; group = "All"; country = "All"; opened = null }
+                                .padding(horizontal = 2.dp, vertical = 7.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(3.dp)
+                        ) {
+                            Text(tab.icon, color = if (screen == tab.title) accent else muted, fontSize = 19.sp)
+                            Text(tab.title, color = if (screen == tab.title) accent else fg.copy(alpha = .76f), fontSize = 8.sp, fontWeight = if (screen == tab.title) FontWeight.Bold else FontWeight.Medium, textAlign = TextAlign.Center)
+                        }
                     }
                 }
-                item { Text("You deserve support without judgment. One step at a time.", color = muted, fontSize = 11.sp, lineHeight = 17.sp) }
             }
+        }
+    }
+}
+
+@Composable
+private fun TherapyShortcut(icon: String, title: String, summary: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Card(modifier.clickable(onClick = onClick), shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+            Text(icon, color = MaterialTheme.colorScheme.primary, fontSize = 23.sp)
+            Text(title, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            Text(summary, color = SoftText, fontSize = 11.sp, lineHeight = 15.sp)
         }
     }
 }
