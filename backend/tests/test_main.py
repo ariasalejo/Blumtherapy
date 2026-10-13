@@ -1,4 +1,7 @@
-import pytest\nfrom pydantic import ValidationError\n\nfrom app.main import PlanRequest, make_plan
+import pytest
+from pydantic import ValidationError
+
+from app.main import PlanRequest, make_plan
 
 
 def test_low_energy_plan_is_small_and_non_clinical():
