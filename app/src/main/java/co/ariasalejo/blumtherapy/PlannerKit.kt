@@ -17,6 +17,30 @@ internal data class PlannerHabit(val id: String, val title: String, val complete
 internal data class PlannerTask(val id: String, val title: String, val dueDate: String, val completed: Boolean)
 internal data class PlannerSnapshot(val habits: List<PlannerHabit>, val tasks: List<PlannerTask>)
 
+internal enum class PlannerTaskState { COMPLETED, OVERDUE, DUE_TODAY, UPCOMING }
+
+internal object PlannerRules {
+    fun normalizeDate(value: String): String? =
+        runCatching { LocalDate.parse(value.trim()).toString() }.getOrNull()
+
+    fun updateCompletionDates(existing: Set<String>, date: String, completed: Boolean): Set<String> {
+        val validDate = normalizeDate(date) ?: return existing
+        return if (completed) existing + validDate else existing - validDate
+    }
+
+    fun status(task: PlannerTask, today: String): PlannerTaskState {
+        if (task.completed) return PlannerTaskState.COMPLETED
+        val due = normalizeDate(task.dueDate) ?: return PlannerTaskState.UPCOMING
+        val current = normalizeDate(today) ?: return PlannerTaskState.UPCOMING
+        return when {
+            due < current -> PlannerTaskState.OVERDUE
+            due == current -> PlannerTaskState.DUE_TODAY
+            else -> PlannerTaskState.UPCOMING
+        }
+    }
+}
+
+
 internal data class PlannerOpportunity(
     val title: String,
     val jurisdiction: String,
@@ -73,12 +97,10 @@ internal object PlannerStore {
     }
 
     fun setHabitCompleted(context: Context, id: String, date: String, completed: Boolean, starterHabits: List<String>) {
-        if (runCatching { LocalDate.parse(date) }.isFailure) return
+        if (PlannerRules.normalizeDate(date) == null) return
         val updated = load(context, starterHabits).habits.map { habit ->
             if (habit.id != id) habit else {
-                val dates = habit.completedDates.toMutableSet()
-                if (completed) dates.add(date) else dates.remove(date)
-                habit.copy(completedDates = dates)
+                habit.copy(completedDates = PlannerRules.updateCompletionDates(habit.completedDates, date, completed))
             }
         }
         saveHabits(context, updated)
@@ -90,7 +112,7 @@ internal object PlannerStore {
 
     fun addTask(context: Context, title: String, dueDate: String) {
         val clean = title.trim().take(120)
-        val validDate = runCatching { LocalDate.parse(dueDate).toString() }.getOrNull()
+        val validDate = PlannerRules.normalizeDate(dueDate)
         if (clean.isBlank() || validDate == null) return
         saveTasks(context, readTasks(context) + PlannerTask(UUID.randomUUID().toString(), clean, validDate, false))
     }
@@ -188,6 +210,11 @@ internal fun PlannerPanel(
     var dateError by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     val today = PlannerStore.today()
     val completedCount = snapshot.habits.count { today in it.completedDates }
+    val encouragement = when {
+        completedCount == 0 -> "Every small step counts."
+        snapshot.habits.isNotEmpty() && completedCount == snapshot.habits.size -> "You showed up for every habit today. Celebrate the effort."
+        else -> "Progress counts, even when it is just one step."
+    }
     val taskList = snapshot.tasks.sortedWith(compareBy<PlannerTask>({ it.completed }, { it.dueDate }))
     val opportunities = plannerOpportunities()
     val ink = androidx.compose.ui.graphics.Color(0xFF0B1020)
@@ -218,6 +245,7 @@ internal fun PlannerPanel(
                 completedCount.toString() + " / " + snapshot.habits.size + " habits completed today",
                 color = accent, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold, fontSize = 12.sp
             )
+            androidx.compose.material3.Text(encouragement, color = mutedColor, fontSize = 11.sp, lineHeight = 16.sp)
             if (expanded) {
                 androidx.compose.material3.Text("Today: " + today, color = mutedColor, fontSize = 12.sp)
                 androidx.compose.material3.Text("Habits", color = textColor, fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
@@ -288,7 +316,7 @@ internal fun PlannerPanel(
                 androidx.compose.material3.Button(
                     enabled = newTask.isNotBlank(),
                     onClick = {
-                        val validDate = runCatching { LocalDate.parse(dueDate.trim()).toString() }.getOrNull()
+                        val validDate = PlannerRules.normalizeDate(dueDate)
                         if (validDate == null) {
                             dateError = true
                         } else {
@@ -318,11 +346,11 @@ internal fun PlannerPanel(
                         )
                         androidx.compose.foundation.layout.Column(modifier = androidx.compose.ui.Modifier.weight(1f)) {
                             androidx.compose.material3.Text(task.title, color = textColor, fontSize = 13.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
-                            val status = when {
-                                task.completed -> "Completed"
-                                task.dueDate < today -> "Overdue · reschedule without guilt"
-                                task.dueDate == today -> "Due today"
-                                else -> "Due " + task.dueDate
+                            val status = when (PlannerRules.status(task, today)) {
+                                PlannerTaskState.COMPLETED -> "Completed"
+                                PlannerTaskState.OVERDUE -> "Overdue · reschedule without guilt"
+                                PlannerTaskState.DUE_TODAY -> "Due today"
+                                PlannerTaskState.UPCOMING -> "Due " + task.dueDate
                             }
                             androidx.compose.material3.Text(status, color = mutedColor, fontSize = 11.sp)
                         }
