@@ -109,7 +109,8 @@ private fun BlumTherapyApp() {
                         accent = mint,
                         cardColor = card,
                         textColor = fg,
-                        mutedColor = muted
+                        mutedColor = muted,
+                        languageCode = "en"
                     )
                 }
                 item {
