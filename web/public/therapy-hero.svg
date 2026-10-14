@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="720" viewBox="0 0 1000 720" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#57445F"/><stop offset=".53" stop-color="#946A82"/><stop offset="1" stop-color="#D0A49C"/></linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#BCA7C2"/><stop offset="1" stop-color="#65726F"/></linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#DDE5C5"/><stop offset="1" stop-color="#8CA995"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#F3D9C7" stop-opacity=".8"/><stop offset="1" stop-color="#F3D9C7" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1000" height="720" rx="44" fill="url(#sky)"/>
+  <circle cx="720" cy="188" r="210" fill="url(#glow)"/>
+  <circle cx="720" cy="188" r="70" fill="#F4DEC9" fill-opacity=".92"/>
+  <path d="M0 425C128 370 220 385 327 430C460 486 590 385 711 367C836 347 925 399 1000 371V720H0V425Z" fill="#BFA8C0" fill-opacity=".72"/>
+  <path d="M0 502C130 460 242 488 352 532C478 583 577 470 696 458C823 445 913 496 1000 467V720H0V502Z" fill="url(#hill)" fill-opacity=".9"/>
+  <path d="M0 598C147 548 244 582 365 618C497 656 610 570 736 554C849 540 930 573 1000 554V720H0V598Z" fill="#5A6C65" fill-opacity=".8"/>
+  <path d="M655 720C675 601 710 511 770 433C816 374 871 336 927 313C900 370 897 422 917 468C943 531 924 609 871 672L830 720H655Z" fill="#D4DFC4" fill-opacity=".82"/>
+  <path d="M733 543C657 517 608 465 600 399C680 419 738 462 757 520L733 543Z" fill="url(#leaf)"/>
+  <path d="M780 453C773 385 811 326 872 294C881 367 847 428 780 453Z" fill="#B8D0BA"/>
+  <path d="M820 634C867 550 935 514 1000 520V595C937 578 875 602 820 660V634Z" fill="#B5C9B0"/>
+  <path d="M690 720C726 610 745 514 799 421C829 370 875 326 927 313" stroke="#F0E3D8" stroke-opacity=".85" stroke-width="5" stroke-linecap="round"/>
+  <path d="M756 522C697 497 653 458 621 409M782 454C824 413 848 367 857 330M720 635C667 601 612 586 566 592" stroke="#F0E3D8" stroke-opacity=".62" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="157" cy="154" r="4" fill="#F1DCCD" fill-opacity=".75"/><circle cx="219" cy="207" r="2.5" fill="#DDE5C5" fill-opacity=".8"/><circle cx="314" cy="128" r="3" fill="#F1DCCD" fill-opacity=".7"/><circle cx="432" cy="203" r="2" fill="#DDE5C5" fill-opacity=".8"/>
+</svg>
