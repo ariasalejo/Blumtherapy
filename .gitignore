@@ -13,3 +13,11 @@ keystore.properties
 .env
 .DS_Store
 Thumbs.db
+# Local web/PWA and API development
+web/node_modules/
+web/dist/
+backend/.venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/*.db
+.env
