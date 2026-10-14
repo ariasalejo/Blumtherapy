@@ -1,0 +1,41 @@
+/* design/tokens.css — central design tokens for colors, spacing, type, and shadows */
+:root{
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --muted: #6b7280; /* gray-500 */
+  --text: #0f172a; /* slate-900 */
+  --accent: #7c3aed; /* violet-600 */
+  --accent-600: #6d28d9;
+  --success: #10b981; /* green-500 */
+  --danger: #ef4444; /* red-500 */
+  --glass: rgba(15,23,42,0.04);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --shadow-sm: 0 1px 2px rgba(2,6,23,0.06);
+  --shadow-md: 0 6px 18px rgba(2,6,23,0.08);
+
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Utility classes used by components */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:var(--radius-md);border:none;cursor:pointer;font-weight:600;font-family:var(--font-sans);
+}
+.btn-primary{background:var(--accent);color:white;box-shadow:var(--shadow-sm);}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid rgba(124,58,237,0.08);}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+.card{background:var(--surface);border-radius:var(--radius-md);padding:var(--space-md);box-shadow:var(--shadow-sm);}
+.card-quiet{background:linear-gradient(180deg,var(--glass),transparent);}
+
+.h-stack{display:flex;gap:var(--space-sm);align-items:center;}
+.v-stack{display:flex;flex-direction:column;gap:var(--space-sm);}
