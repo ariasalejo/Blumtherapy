@@ -69,6 +69,9 @@ jobs:
           else
             npm run build
           fi
+          # GitHub Pages serves project sites under /Blumtherapy/; this fallback
+          # lets a direct visit to /Blumtherapy/inicio load the SPA shell.
+          cp ./dist/index.html ./dist/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
