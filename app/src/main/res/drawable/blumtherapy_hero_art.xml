@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="240dp"
+    android:viewportWidth="360"
+    android:viewportHeight="240">
+    <!-- Decorative, offline-first botanical landscape. Alpha values preserve the hero text contrast. -->
+    <path android:fillColor="#45F2E7F4" android:pathData="M292,14 A43,43 0,1 0,292,100 A43,43 0,1 0,292,14 Z" />
+    <path android:fillColor="#3FBC9DBD" android:pathData="M0,165 C42,143 78,149 116,166 C154,184 184,174 221,151 C268,121 312,132 360,109 L360,240 L0,240 Z" />
+    <path android:fillColor="#4A8F8AB3" android:pathData="M0,194 C52,172 93,183 134,194 C181,208 219,180 258,174 C299,168 329,181 360,165 L360,240 L0,240 Z" />
+    <path android:fillColor="#60D3B6C9" android:pathData="M0,219 C53,199 96,211 136,220 C183,230 225,203 269,199 C304,196 334,205 360,195 L360,240 L0,240 Z" />
+    <path android:fillColor="#90D8B8D0" android:pathData="M303,226 C286,203 281,181 287,157 C293,135 308,119 326,110 C319,132 321,150 333,165 C345,181 344,205 329,225 Z" />
+    <path android:fillColor="#85E7D0DC" android:pathData="M300,190 C277,185 263,168 259,149 C281,152 300,164 307,180 Z" />
+    <path android:fillColor="#70E4C6D8" android:pathData="M309,160 C305,139 313,120 332,106 C337,128 329,148 309,160 Z" />
+    <path android:fillColor="#7AC9DABF" android:pathData="M310,212 C326,188 347,181 360,184 L360,210 C344,204 330,208 310,224 Z" />
+    <path android:fillColor="#80F0D8E6" android:pathData="M276,223 C264,207 245,202 229,207 C239,223 256,231 276,223 Z" />
+    <path android:fillColor="#75E8C5D6" android:pathData="M286,205 C283,186 267,171 249,169 C251,189 265,203 286,205 Z" />
+    <path android:fillColor="#00000000" android:strokeColor="#BFEBD5E4" android:strokeWidth="2.2" android:strokeLineCap="round" android:pathData="M282,238 C293,207 294,179 307,153 C315,137 328,123 338,113" />
+    <path android:fillColor="#00000000" android:strokeColor="#A8E7C8D8" android:strokeWidth="1.6" android:strokeLineCap="round" android:pathData="M297,190 C284,180 274,169 265,154 M307,162 C320,148 325,133 327,121 M288,211 C272,201 259,195 246,193" />
+</vector>
