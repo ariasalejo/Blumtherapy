@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -19,8 +20,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -110,21 +114,47 @@ private fun BlumTherapyApp() {
                     when (screen) {
                         "Home" -> {
                             item {
-                                Column(
-                                    Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp))
-                                        .background(Brush.linearGradient(listOf(Color(0xFF392D43), Color(0xFF67465E), Color(0xFF84565B))))
-                                        .border(1.dp, Petal.copy(alpha = 0.3f), RoundedCornerShape(28.dp)).padding(23.dp),
-                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                Box(
+                                    Modifier.fillMaxWidth()
+                                        .clip(RoundedCornerShape(28.dp))
+                                        .background(Brush.linearGradient(listOf(Color(0xFF332B49), Color(0xFF58436F), Color(0xFF7D536E))))
+                                        .border(1.dp, Color(0xFFD6C5FF).copy(alpha = 0.34f), RoundedCornerShape(28.dp))
                                 ) {
-                                    Text("A GENTLER WAY FORWARD", color = Petal, fontSize = 9.sp, letterSpacing = 1.5.sp, fontWeight = FontWeight.Bold)
-                                    Text("You can start where you are.", color = Color.White, fontSize = 31.sp, lineHeight = 36.sp, fontWeight = FontWeight.Bold)
-                                    Text("A calm space to rebuild routines, find trusted support and move at a pace that respects your life.", color = Color(0xFFF0E4EC), fontSize = 13.sp, lineHeight = 20.sp)
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        Surface(color = Sage, shape = RoundedCornerShape(13.dp), modifier = Modifier.clickable { screen = "My plan" }) {
-                                            Text("Shape my day ↗", color = Aubergine, fontWeight = FontWeight.Bold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp))
-                                        }
-                                        Surface(color = Color.White.copy(alpha = 0.10f), shape = RoundedCornerShape(13.dp), modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.24f), RoundedCornerShape(13.dp)).clickable { screen = "Support" }) {
-                                            Text("Find support", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                                    Image(
+                                        painter = painterResource(id = R.drawable.blumtherapy_hero_art),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.align(Alignment.CenterEnd).fillMaxWidth().height(252.dp).alpha(0.78f)
+                                    )
+                                    Box(Modifier.matchParentSize().background(Brush.horizontalGradient(listOf(Color(0xF0332B49), Color(0xB0332B49), Color(0x46332B49)))))
+                                    Column(Modifier.fillMaxWidth().padding(23.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                        Text("A GENTLER WAY FORWARD", color = Petal, fontSize = 9.sp, letterSpacing = 1.5.sp, fontWeight = FontWeight.Bold)
+                                        Text("You can start where you are.", color = Color.White, fontSize = 31.sp, lineHeight = 36.sp, fontWeight = FontWeight.Bold)
+                                        Text("A calm space to rebuild routines, find trusted support and move at a pace that respects your life.", color = Color(0xFFF0EAF5), fontSize = 13.sp, lineHeight = 20.sp)
+                                        BoxWithConstraints(Modifier.fillMaxWidth()) {
+                                            if (maxWidth < 340.dp) {
+                                                Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                    Surface(color = Sage, shape = RoundedCornerShape(13.dp), modifier = Modifier.fillMaxWidth().clickable { screen = "My plan" }) {
+                                                        Box(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp), contentAlignment = Alignment.Center) {
+                                                            Text("Shape my day ↗", color = Aubergine, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                                        }
+                                                    }
+                                                    Surface(color = Color.White.copy(alpha = 0.10f), shape = RoundedCornerShape(13.dp), modifier = Modifier.fillMaxWidth().border(1.dp, Color.White.copy(alpha = 0.24f), RoundedCornerShape(13.dp)).clickable { screen = "Support" }) {
+                                                        Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp), contentAlignment = Alignment.Center) {
+                                                            Text("Find support", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                                    Surface(color = Sage, shape = RoundedCornerShape(13.dp), modifier = Modifier.clickable { screen = "My plan" }) {
+                                                        Text("Shape my day ↗", color = Aubergine, fontWeight = FontWeight.Bold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp))
+                                                    }
+                                                    Surface(color = Color.White.copy(alpha = 0.10f), shape = RoundedCornerShape(13.dp), modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.24f), RoundedCornerShape(13.dp)).clickable { screen = "Support" }) {
+                                                        Text("Find support", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp))
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
