@@ -3,27 +3,28 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  base: "/Blumtherapy/",
   plugins: [
     react(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {
-        id: "/",
+        id: "/Blumtherapy/",
         name: "BlumTherapy — Wellbeing and gentle habits",
         short_name: "BlumTherapy",
         description: "Private, non-punitive daily steps and trusted support starting points.",
         lang: "en",
-        start_url: "/",
-        scope: "/",
+        start_url: "/Blumtherapy/",
+        scope: "/Blumtherapy/",
         display: "standalone",
         orientation: "portrait-primary",
         background_color: "#f8f3ef",
         theme_color: "#352b3c",
-        icons: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }]
+        icons: [{ src: "/Blumtherapy/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }]
       },
       workbox: {
-        navigateFallback: "/index.html",
+        navigateFallback: "/Blumtherapy/index.html",
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
         cleanupOutdatedCaches: true,
         runtimeCaching: [{
